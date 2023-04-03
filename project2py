@@ -1,0 +1,73 @@
+"""
+WebPush isimli bir class tanımlayınız.
+platform, optin, global_frequency_capping, start_date, end_date, language, push_type isimli özniteliklere sahip olsun.
+optin değeri boolean değer alsın.
+TriggerPush, BulkPush, SegmentPush, PriceAlertPush, InstockPush isimli classlar tanımlayınız.
+WebPush class’ı send_push  isimli bir fonksiyona sahip olsun ve bu fonksiyon çağırıldığı zaman push tipine göre
+' …… Push gönderildi!’ yazısı gösterilsin.
+Bu class’lar WebPush classından miras alsın.Miras alan classlar ana classtan farklı olarak aşağıdaki değişkenlere sahip
+olsun:
+
+https://insider-portal.atlassian.net/wiki/spaces/OPT/pages/3454468166/3.Python+Kal+t+m+devi (Table)
+
+discountPrice(price_info, discount_rate) : Bu method, üründe yapılan indirimi  hesaplayıp ve return ile geri
+döndürecektir.
+stockUpdate() : Bu method, stock bilgisini güncelleyip return ile geri döndürecektir. Örneğin oluşturulan nesnenin
+stock bilgisi true ise false, false ise true yapacaktır.
+Bütün push çeşitlerinden nesne oluşturulup, methodları varsa kullanılmalıdır ve WebPush classında bulunan send_push
+methodu çağırılmalıdır.
+"""
+
+class WebPush:
+
+    def __init__(self, platform, optin: bool, global_frequency_capping, start_date, end_date, language, push_type):
+        self.platform = platform
+        self.optin = optin
+        self.global_frequency_capping= global_frequency_capping
+        self.start_date = start_date
+        self.end_date = end_date
+        self.language = language
+        self.push_type = push_type
+
+    def send_push(self):
+        print(self.push_type + " Push gönderildi!")
+
+class TriggerPush(WebPush):
+    trigger_page: str
+
+class BulkPush(WebPush):
+    send_date: int
+
+class SegmentPush(WebPush):
+    segment_name:str
+
+class PriceAlertPush(WebPush):
+    price_info: int
+    discount_rate: float
+
+    def discountPrice(self, price_info, discount_rate):
+        price_info -= (price_info / discount_rate)
+        return print(price_info)
+
+class InstockPush(WebPush):
+    stock_info: bool
+
+    def stockUpdate(self, stock_info):
+        return print(stock_info)
+
+trigger = TriggerPush("desktop", True, 1, "28.03.2023", "30.03.2024", "EN", "Trigger")
+trigger.send_push()
+
+bulk = BulkPush("desktop", True, 2, "28.03.2023", "30.03.2024", "EN", "Bulk")
+bulk.send_push()
+
+segment = SegmentPush("desktop", True, 3, "28.03.2023", "30.03.2024", "EN", "Segment")
+segment.send_push()
+
+priceAlert = PriceAlertPush("desktop", True, 4, "28.03.2023", "30.03.2024", "EN", "Price Alert")
+priceAlert.send_push()
+priceAlert.discountPrice(500, 10.0)
+
+instock = InstockPush("desktop", True, 5, "28.03.2023", "30.03.2024", "EN", "Instock")
+instock.send_push()
+instock.stockUpdate(False)
